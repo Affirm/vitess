@@ -226,7 +226,7 @@ func (ins *Insert) execInsertUnsharded(vcursor VCursor, bindVars map[string]*que
 		return nil, err
 	}
 	if len(rss) != 1 {
-		return nil, vterrors.Errorf(vtrpcpb.Code_FAILED_PRECONDITION, "Keyspace does not have exactly one shard: %v", rss)
+		return nil, vterrors.Errorf(vtrpcpb.Code_FAILED_PRECONDITION, "Unsharded: Keyspace does not have exactly one shard: %v", rss)
 	}
 	err = allowOnlyPrimary(rss...)
 	if err != nil {

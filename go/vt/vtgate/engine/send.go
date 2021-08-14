@@ -89,7 +89,7 @@ func (s *Send) Execute(vcursor VCursor, bindVars map[string]*querypb.BindVariabl
 	}
 
 	if !s.Keyspace.Sharded && len(rss) != 1 {
-		return nil, vterrors.Errorf(vtrpcpb.Code_FAILED_PRECONDITION, "Keyspace does not have exactly one shard: %v", rss)
+		return nil, vterrors.Errorf(vtrpcpb.Code_FAILED_PRECONDITION, "Execute1: Keyspace does not have exactly one shard: %v", rss)
 	}
 
 	if s.SingleShardOnly && len(rss) != 1 {
@@ -139,7 +139,7 @@ func (s *Send) StreamExecute(vcursor VCursor, bindVars map[string]*querypb.BindV
 	}
 
 	if !s.Keyspace.Sharded && len(rss) != 1 {
-		return vterrors.Errorf(vtrpcpb.Code_FAILED_PRECONDITION, "Keyspace does not have exactly one shard: %v", rss)
+		return vterrors.Errorf(vtrpcpb.Code_FAILED_PRECONDITION, "StreamExecute: Keyspace does not have exactly one shard: %v", rss)
 	}
 
 	if s.SingleShardOnly && len(rss) != 1 {

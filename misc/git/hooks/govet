@@ -45,5 +45,3 @@ done
 
 echo
 echo "Please fix the go vet warnings above. To disable certain checks, change vetflags in misc/git/hooks/govet."
-exit 1
-

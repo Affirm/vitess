@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"vitess.io/vitess/go/vt/log"
 	"vitess.io/vitess/go/vt/vtgate/evalengine"
 
 	"vitess.io/vitess/go/sqltypes"
@@ -72,6 +73,7 @@ func (vind *Hash) NeedsVCursor() bool {
 
 // Map can map ids to key.Destination objects.
 func (vind *Hash) Map(cursor VCursor, ids []sqltypes.Value) ([]key.Destination, error) {
+	log.Infof("Mapping: %s", ids)
 	out := make([]key.Destination, len(ids))
 	for i, id := range ids {
 		var num uint64
@@ -93,6 +95,7 @@ func (vind *Hash) Map(cursor VCursor, ids []sqltypes.Value) ([]key.Destination, 
 		}
 		out[i] = key.DestinationKeyspaceID(vhash(num))
 	}
+	log.Infof("Mapping out: %s")
 	return out, nil
 }
 
