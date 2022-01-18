@@ -86,30 +86,18 @@ func (vind *ShiftShard) Map(cursor VCursor, ids []sqltypes.Value) ([]key.Destina
 		// var num uint64
 		var err error
 
-		// if id.IsSigned() {
-		// 	// This is ToUint64 with no check on negative values.
-		// 	str := id.ToString()
-		// 	var ival int64
-		// 	ival, err = strconv.ParseInt(str, 10, 64)
-		// 	num = uint64(ival)
-		// } else {
-		// 	num, err = evalengine.ToUint64(id)
-		// }
-
 		shardBytes := make([]byte, 1)
 		if id.IsNull() {
 			// If null, this is likely an insert,
 			rand.Read(shardBytes)
-			log.Infof("Shift: Mapped to null, randomizing shard allocation: %s", shardBytes)
+			log.Infof("Shift: Mapped to null, randomizing shard allocation: %d", shardBytes[0])
 		} else if id.IsIntegral() {
-			str := id.ToString()
-			var ival int64
-			ival, _ = strconv.ParseInt(str, 10, 64)
-			shardId := ival * 256 / (int64(vind.num_shards) * vind.keys_per_shard)
+			ival, _ := id.ToInt64()
+			shardId := (ival / int64(vind.keys_per_shard)) * (256 / int64(vind.num_shards))
 			shardBytes[0] = uint8(shardId)
-			log.Infof("Shift: IsIntegral, Id is: %d, shard Id is: %s", ival, shardId)
+			log.Infof("Shift: IsIntegral, Id is: %d, shard Id is: %d, %d", ival, shardId, shardBytes[0])
 		} else {
-			log.Infof("Shift: Not integral: WE FUCKED")
+			log.Infof("Shift: Not integral: REKT")
 			err = fmt.Errorf("ShiftShard Error: Only supporting ints bro")
 		}
 
@@ -125,7 +113,7 @@ func (vind *ShiftShard) Map(cursor VCursor, ids []sqltypes.Value) ([]key.Destina
 
 // Verify returns true if ids maps to ksids.
 func (vind *ShiftShard) Verify(_ VCursor, ids []sqltypes.Value, ksids [][]byte) ([]bool, error) {
-	log.Infof("Shift Mapping verifiaction for: %s ===> %s", ids, ksids)
+	log.Infof("Shift Mapping verifiction for: %s ===> %s", ids, ksids)
 	out := make([]bool, len(ids))
 	for i := range ids {
 		// num, err := evalengine.ToUint64(ids[i])
